@@ -1,8 +1,14 @@
 'use client';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, Sparkles, MeshDistortMaterial } from '@react-three/drei';
+import { Float, Sparkles, Text } from '@react-three/drei';
 import { useRef } from 'react';
 import * as THREE from 'three';
-function Core(){const ref=useRef<THREE.Mesh>(null);useFrame((_,d)=>{if(ref.current){ref.current.rotation.x+=d*.12;ref.current.rotation.y+=d*.22}});return <Float speed={1.3} rotationIntensity={.35} floatIntensity={.7}><mesh ref={ref}><icosahedronGeometry args={[1.3,4]}/><MeshDistortMaterial color="#d9ff4a" metalness={.7} roughness={.22} distort={.22} speed={1.5}/></mesh></Float>}
-function Grid(){return <gridHelper args={[7,14,'#34342f','#34342f']} position={[0,-1.55,0]}/>}
-export default function Scene(){return <div className="scene"><Canvas camera={{position:[0,0,4.4],fov:42}} dpr={[1,1.5]}><ambientLight intensity={1.1}/><directionalLight position={[3,4,5]} intensity={3}/><pointLight position={[-3,2,2]} intensity={10} color="#d9ff4a"/><Core/><Grid/><Sparkles count={80} scale={5} size={1.8} speed={.2}/></Canvas></div>}
+
+function Board(){const ref=useRef<THREE.Group>(null);useFrame((_,d)=>{if(ref.current){ref.current.rotation.y+=d*.08;ref.current.rotation.x=Math.sin(performance.now()*.0005)*.06}});const chips=[[-.85,.18,.42],[.1,.18,.2],[.8,.18,-.25],[-.25,.18,-.45]];return <Float speed={1.1} rotationIntensity={.18} floatIntensity={.35}><group ref={ref} rotation={[.2,-.35,.05]}>
+<mesh><boxGeometry args={[2.7,.14,1.8]}/><meshStandardMaterial color="#26342b" roughness={.7} metalness={.2}/></mesh>
+{chips.map((p,i)=><mesh key={i} position={p as [number,number,number]}><boxGeometry args={[.42,.12,.32]}/><meshStandardMaterial color="#151815" metalness={.65} roughness={.25}/></mesh>)}
+{Array.from({length:12}).map((_,i)=><mesh key={'led'+i} position={[-1.15+i*.21,.12,.72]}><sphereGeometry args={[.035,12,12]}/><meshStandardMaterial color="#d9ff4a" emissive="#d9ff4a" emissiveIntensity={2}/></mesh>)}
+{Array.from({length:7}).map((_,i)=><mesh key={'pin'+i} position={[-1.05+i*.35,.12,-.76]}><cylinderGeometry args={[.035,.035,.16,12]}/><meshStandardMaterial color="#b8b6ad" metalness={.8}/></mesh>)}
+</group></Float>}
+function Signal({z,phase}:{z:number;phase:number}){const pts=Array.from({length:28},(_,i)=>{const x=-2.3+i*.17;const y=.75+((i+phase)%5===0?.35:0);return new THREE.Vector3(x,y,z)});const geo=new THREE.BufferGeometry().setFromPoints(pts);return <line geometry={geo}><lineBasicMaterial color="#d9ff4a"/></line>}
+export default function Scene(){return <div className="scene"><Canvas camera={{position:[0,1.1,5.3],fov:42}} dpr={[1,1.5]}><ambientLight intensity={1.1}/><directionalLight position={[3,4,5]} intensity={3}/><pointLight position={[-3,2,2]} intensity={12} color="#d9ff4a"/><Board/><Signal z={-.95} phase={0}/><Signal z={-.95} phase={2}/><Sparkles count={55} scale={6} size={1.6} speed={.18}/><Text position={[0,-1.25,0]} fontSize={.16} color="#8d8b82" anchorX="center">HIL • ECU • CAN / J1939</Text></Canvas></div>}
