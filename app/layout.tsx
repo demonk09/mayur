@@ -1,4 +1,16 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
-export const metadata: Metadata = { title: 'Mayur Kamble | Automation Test Engineer', description: 'Portfolio of Mayur Kamble — Automation Test Engineer specializing in Python, HIL, web/API automation, CAN/J1939 and AI-assisted testing.' };
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}</body></html>}
+
+export const metadata: Metadata = {
+  title: 'Mayur Kamble | Automotive Test Automation Engineer',
+  description: 'Portfolio of Mayur Kamble — Automotive Test Automation Engineer specializing in Python, HIL, dSPACE, CAN/J1939, CAPL and web/API automation.',
+  applicationName: 'Mayur Kamble Portfolio',
+  manifest: '/manifest.webmanifest',
+  icons: { icon: '/icon.svg', apple: '/icon.svg' },
+};
+
+export const viewport: Viewport = { themeColor: '#0b100e' };
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <html lang="en"><body>{children}</body></html>;
+}
